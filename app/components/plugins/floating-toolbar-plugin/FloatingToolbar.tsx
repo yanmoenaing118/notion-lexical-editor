@@ -4,11 +4,14 @@ import { mergeRegister } from "@lexical/utils";
 import {
   $getSelection,
   COMMAND_PRIORITY_LOW,
+  FORMAT_TEXT_COMMAND,
   getDOMSelection,
   LexicalEditor,
   SELECTION_CHANGE_COMMAND,
 } from "lexical";
 import { useCallback, useEffect, useRef } from "react";
+import { MdOutlineFormatBold, MdLink } from "react-icons/md";
+
 
 const FloatingToolbar = ({
   anchorElem,
@@ -18,7 +21,6 @@ const FloatingToolbar = ({
   editor: LexicalEditor;
 }) => {
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
-
   const $updateTextFormatFloatingToolbar = useCallback(() => {
     const selection = $getSelection();
 
@@ -92,9 +94,14 @@ const FloatingToolbar = ({
       className="FloatingToolbarPlugin shadow-lg rounded-sm p-3 border border-gray-100 absolute z-30 bg-white top-0 left-0 opacity-0"
     >
       <div className="flex gap-3 items-center">
-        <button>B</button>
-        <button>I</button>
-        <button>U</button>
+        <button
+          onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")}
+        >
+          <MdOutlineFormatBold />
+        </button>
+        <button>
+          <MdLink />
+        </button>
       </div>
     </div>
   );
