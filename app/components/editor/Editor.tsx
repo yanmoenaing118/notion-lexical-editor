@@ -5,6 +5,7 @@ import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { useState } from "react";
+import FloatingToolbarPlugin from "../plugins/floating-toolbar-plugin/FloatingToolbarPlugin";
 
 const theme = {};
 
@@ -31,19 +32,21 @@ function Editor() {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <RichTextPlugin
-
         contentEditable={
-          <div className="editor relative z-10">
+          <div className="editor relative z-10" ref={onRef} >
             <ContentEditable className="ring-0 outline-none border-none" />
           </div>
         }
         ErrorBoundary={LexicalErrorBoundary}
-
-        placeholder={<div className="absolute left-0 top-0 z-0 text-gray-400">Write something or enter / for commands ...</div>}
-
+        placeholder={
+          <div className="absolute left-0 top-0 z-0 text-gray-400">
+            Write something or enter / for commands ...
+          </div>
+        }
       />
       <HistoryPlugin />
       <AutoFocusPlugin />
+      {floatingAnchorElem && <FloatingToolbarPlugin anchorElem={floatingAnchorElem} />}
     </LexicalComposer>
   );
 }
