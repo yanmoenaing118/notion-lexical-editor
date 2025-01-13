@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-const VERTICAL_GAP = 10;
+const VERTICAL_GAP = 5;
 const HORIZONTAL_OFFSET = 5;
 
 export function setFloatingElemPosition(

@@ -8,10 +8,15 @@ export default function FloatingToolbarPlugin({
   anchorElem?: HTMLElement;
 }) {
   const [editor] = useLexicalComposerContext();
-  const { popupCharStylesEditorRef } = useFloatingToolbarPlugin({
+  const { popupCharStylesEditorRef, isText } = useFloatingToolbarPlugin({
     anchorElem,
     editor,
   });
+
+  if(!isText) {
+    return null;
+  }
+
 
   return createPortal(
     <div
