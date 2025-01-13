@@ -9,9 +9,9 @@ import {
   LexicalEditor,
   SELECTION_CHANGE_COMMAND,
 } from "lexical";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MdOutlineFormatBold, MdLink } from "react-icons/md";
-
+import FloatingLinkEditor from "./FloatingLinkEditor";
 
 const FloatingToolbar = ({
   anchorElem,
@@ -21,6 +21,8 @@ const FloatingToolbar = ({
   editor: LexicalEditor;
 }) => {
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
+  const linkEditorPosition = useState<DOMRect | null>(null);
+
   const $updateTextFormatFloatingToolbar = useCallback(() => {
     const selection = $getSelection();
 
@@ -89,21 +91,24 @@ const FloatingToolbar = ({
   }, [editor, $updateTextFormatFloatingToolbar]);
 
   return (
-    <div
-      ref={popupCharStylesEditorRef}
-      className="FloatingToolbarPlugin shadow-lg rounded-sm p-3 border border-gray-100 absolute z-30 bg-white top-0 left-0 opacity-0"
-    >
-      <div className="flex gap-3 items-center">
-        <button
-          onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")}
-        >
-          <MdOutlineFormatBold />
-        </button>
-        <button>
-          <MdLink />
-        </button>
+    <>
+      <div
+        ref={popupCharStylesEditorRef}
+        className="FloatingToolbarPlugin shadow-lg rounded-sm p-3 border border-gray-100 absolute z-30 bg-white top-0 left-0 opacity-0"
+      >
+        <div className="flex gap-3 items-center">
+          <button
+            onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")}
+          >
+            <MdOutlineFormatBold />
+          </button>
+          <button>
+            <MdLink />
+          </button>
+        </div>
       </div>
-    </div>
+      <FloatingLinkEditor />
+    </>
   );
 };
 

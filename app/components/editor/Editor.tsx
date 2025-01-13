@@ -6,6 +6,8 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { useState } from "react";
 import FloatingToolbarPlugin from "../plugins/floating-toolbar-plugin/FloatingToolbarPlugin";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import { LinkNode } from "@lexical/link";
 
 const theme = {};
 
@@ -18,6 +20,7 @@ function Editor() {
     namespace: "MyEditor",
     theme,
     onError,
+    nodes: [LinkNode]
   };
 
   const [floatingAnchorElem, setFloatingAnchorElem] =
@@ -46,6 +49,7 @@ function Editor() {
       />
       <HistoryPlugin />
       <AutoFocusPlugin />
+      <LinkPlugin />
       {floatingAnchorElem && <FloatingToolbarPlugin anchorElem={floatingAnchorElem} />}
     </LexicalComposer>
   );
