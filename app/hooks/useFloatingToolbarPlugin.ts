@@ -12,14 +12,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { getDOMRangeRect } from "../utils/getDOMRange";
 import { setFloatingElemPosition } from "../utils/setFloatingElemPosition";
 
-const useFloatingToolbarPlugin = ({
-  anchorElem,
-  editor,
-}: {
-  anchorElem: HTMLElement;
-  editor: LexicalEditor;
-}) => {
-  const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
+const useFloatingToolbarPlugin = ({ editor }: { editor: LexicalEditor }) => {
 
   const [isText, setIsText] = useState(false);
 
@@ -62,30 +55,6 @@ const useFloatingToolbarPlugin = ({
     });
   }, [editor]);
 
-  const $updateTextFormatFloatingToolbar = useCallback(() => {
-    if (!isText) return;
-    const selection = $getSelection();
-
-    const popupCharStylesEditorElem = popupCharStylesEditorRef.current;
-    const nativeSelection = getDOMSelection(editor._window);
-
-    if (popupCharStylesEditorElem === null) {
-      return;
-    }
-
-    const rootElement = editor.getRootElement();
-    if (
-      selection !== null &&
-      nativeSelection !== null &&
-      !nativeSelection.isCollapsed &&
-      rootElement !== null &&
-      rootElement.contains(nativeSelection.anchorNode)
-    ) {
-      const rangeRect = getDOMRangeRect(nativeSelection, rootElement);
-      setFloatingElemPosition(rangeRect, popupCharStylesEditorElem, anchorElem);
-    }
-  }, [editor, anchorElem, isText]);
-
   useEffect(() => {
     document.addEventListener("selectionchange", updatePopup);
     return () => {
@@ -105,52 +74,7 @@ const useFloatingToolbarPlugin = ({
       }),
     );
   }, [editor, updatePopup]);
-
-  useEffect(() => {
-    const scrollerElem = anchorElem.parentElement;
-
-    const update = () => {
-      editor.getEditorState().read(() => {
-        $updateTextFormatFloatingToolbar();
-      });
-    };
-
-    window.addEventListener("resize", update);
-    if (scrollerElem) {
-      scrollerElem.addEventListener("scroll", update);
-    }
-
-    return () => {
-      window.removeEventListener("resize", update);
-      if (scrollerElem) {
-        scrollerElem.removeEventListener("scroll", update);
-      }
-    };
-  }, [editor, $updateTextFormatFloatingToolbar, anchorElem]);
-
-  useEffect(() => {
-    editor.getEditorState().read(() => {
-      $updateTextFormatFloatingToolbar();
-    });
-    return mergeRegister(
-      editor.registerUpdateListener(({ editorState }) => {
-        editorState.read(() => {
-          $updateTextFormatFloatingToolbar();
-        });
-      }),
-
-      editor.registerCommand(
-        SELECTION_CHANGE_COMMAND,
-        () => {
-          $updateTextFormatFloatingToolbar();
-          return false;
-        },
-        COMMAND_PRIORITY_LOW,
-      ),
-    );
-  }, [editor, $updateTextFormatFloatingToolbar]);
-
-  return { popupCharStylesEditorRef, isText };
+  return { isText };
 };
 
 export default useFloatingToolbarPlugin;
