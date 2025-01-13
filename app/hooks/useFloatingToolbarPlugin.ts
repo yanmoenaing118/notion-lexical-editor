@@ -3,14 +3,10 @@ import {
   $getSelection,
   $isRangeSelection,
   $isTextNode,
-  COMMAND_PRIORITY_LOW,
   getDOMSelection,
   LexicalEditor,
-  SELECTION_CHANGE_COMMAND,
 } from "lexical";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { getDOMRangeRect } from "../utils/getDOMRange";
-import { setFloatingElemPosition } from "../utils/setFloatingElemPosition";
+import { useCallback, useEffect, useState } from "react";
 
 const useFloatingToolbarPlugin = ({ editor }: { editor: LexicalEditor }) => {
 
