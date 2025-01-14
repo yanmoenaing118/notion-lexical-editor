@@ -1,7 +1,18 @@
-import { useRef } from "react";
 
-export default function FloatingLinkEditor() {
-  const linkEditorRef = useRef<HTMLDivElement | null>(null);
+export default function FloatingLinkEditor({ rect }: { rect: DOMRect | null }) {
+  if (!rect) return null;
 
-  return <div className="FloatingLinkEditor">FloatingLinkEditor</div>;
+  const x = rect.x;
+  const y = rect.y + rect.height + 30;
+
+  return (
+    <div
+      className="FloatingLinkEditor fixed left-0 top-0 bg-white shadow-md p-1"
+      style={{
+        transform: `translate(${x}px, ${y}px)`,
+      }}
+    >
+      FloatingLinkEditor
+    </div>
+  );
 }

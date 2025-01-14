@@ -13,6 +13,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MdOutlineFormatBold, MdLink } from "react-icons/md";
 import FloatingLinkEditor from "./FloatingLinkEditor";
 
+
 const FloatingToolbar = ({
   anchorElem,
   editor,
@@ -21,7 +22,9 @@ const FloatingToolbar = ({
   editor: LexicalEditor;
 }) => {
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
-  const linkEditorPosition = useState<DOMRect | null>(null);
+  const [linkEditorPosition, setLinkEditorPosition] = useState<DOMRect | null>(
+    null,
+  );
 
   const $updateTextFormatFloatingToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -43,6 +46,9 @@ const FloatingToolbar = ({
     ) {
       const rangeRect = getDOMRangeRect(nativeSelection, rootElement);
       setFloatingElemPosition(rangeRect, popupCharStylesEditorElem, anchorElem);
+      const linkEditorPosition =
+        popupCharStylesEditorElem.getBoundingClientRect();
+      setLinkEditorPosition(linkEditorPosition);
     }
   }, [editor, anchorElem]);
 
@@ -107,7 +113,7 @@ const FloatingToolbar = ({
           </button>
         </div>
       </div>
-      <FloatingLinkEditor />
+      <FloatingLinkEditor rect={linkEditorPosition} />
     </>
   );
 };
