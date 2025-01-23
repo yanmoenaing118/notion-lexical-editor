@@ -1,4 +1,5 @@
-import { mergeRegister } from "@lexical/utils";
+import { $isAutoLinkNode } from "@lexical/link";
+import { $isLinkNode } from "@lexical/link";
 import {
   $getSelection,
   $isRangeSelection,
@@ -7,25 +8,47 @@ import {
   LexicalEditor,
 } from "lexical";
 import { useCallback, useEffect, useState } from "react";
+import { getSelectedNode } from "../utils/getSelectedNode";
+import { $findMatchingParent, mergeRegister } from "@lexical/utils";
 
 const useFloatingToolbarPlugin = ({ editor }: { editor: LexicalEditor }) => {
-
   const [isText, setIsText] = useState(false);
+  const [showLinkEditor, setShowLinkEditor] = useState(false);
+  const [isLink, setIsLink] = useState(false);
+  const [linkUrl, setLinkUrl] = useState("");
 
   const updatePopup = useCallback(() => {
     editor.getEditorState().read(() => {
       const selection = $getSelection();
       const nativeSelection = getDOMSelection(editor._window);
       const rootElement = editor.getRootElement();
-      console.log("updatePopu");
+
+      if ($isRangeSelection(selection)) {
+        const focusNode = getSelectedNode(selection);
+        const focusLinkNode = $findMatchingParent(focusNode, $isLinkNode);
+        const focusAutoLinkNode = $findMatchingParent(
+          focusNode,
+          $isAutoLinkNode,
+        );
+        if (focusLinkNode || focusAutoLinkNode) {
+          setIsLink(true);
+          if (focusLinkNode) {
+            setLinkUrl(focusLinkNode.getURL());
+          } else if (focusAutoLinkNode) {
+            setLinkUrl(focusAutoLinkNode.getURL());
+          }
+        } else {
+          setIsLink(false);
+          setLinkUrl("")
+        }
+      }
+
       if (
         nativeSelection !== null &&
         (!$isRangeSelection(selection) ||
           rootElement === null ||
           !rootElement.contains(nativeSelection.anchorNode))
       ) {
-        console.log("updatePopu first cond");
-
         setIsText(false);
         return;
       }
@@ -42,7 +65,6 @@ const useFloatingToolbarPlugin = ({ editor }: { editor: LexicalEditor }) => {
         const focusNode = selection.focus.getNode();
 
         const isText = $isTextNode(anchorNode) && $isTextNode(focusNode);
-        console.log("updatePopu third cond", isText);
 
         setIsText(isText);
         return;
@@ -70,7 +92,7 @@ const useFloatingToolbarPlugin = ({ editor }: { editor: LexicalEditor }) => {
       }),
     );
   }, [editor, updatePopup]);
-  return { isText };
+  return { isText, isLink, linkUrl, setShowLinkEditor, showLinkEditor };
 };
 
 export default useFloatingToolbarPlugin;

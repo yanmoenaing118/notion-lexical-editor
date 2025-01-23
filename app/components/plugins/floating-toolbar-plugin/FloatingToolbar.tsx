@@ -1,25 +1,33 @@
 import { getDOMRangeRect } from "@/app/utils/getDOMRange";
 import { setFloatingElemPosition } from "@/app/utils/setFloatingElemPosition";
-import { mergeRegister } from "@lexical/utils";
+import { $findMatchingParent, mergeRegister } from "@lexical/utils";
+import { $isLinkNode, $isAutoLinkNode } from "@lexical/link";
 import {
   $getSelection,
+  $isRangeSelection,
   COMMAND_PRIORITY_LOW,
   FORMAT_TEXT_COMMAND,
   getDOMSelection,
   LexicalEditor,
   SELECTION_CHANGE_COMMAND,
 } from "lexical";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Dispatch, useCallback, useEffect, useRef, useState } from "react";
 import { MdOutlineFormatBold, MdLink } from "react-icons/md";
 import FloatingLinkEditor from "./FloatingLinkEditor";
-
+import { getSelectedNode } from "@/app/utils/getSelectedNode";
 
 const FloatingToolbar = ({
   anchorElem,
   editor,
+  setShowLinkEditor,
+  showLinkEditor,
+  linkUrl,
 }: {
   anchorElem: HTMLElement;
   editor: LexicalEditor;
+  setShowLinkEditor: Dispatch<boolean>;
+  showLinkEditor: boolean;
+  linkUrl: string;
 }) => {
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
   const [linkEditorPosition, setLinkEditorPosition] = useState<DOMRect | null>(
@@ -108,12 +116,18 @@ const FloatingToolbar = ({
           >
             <MdOutlineFormatBold />
           </button>
-          <button>
+          <button onClick={() => setShowLinkEditor(true)}>
             <MdLink />
           </button>
         </div>
       </div>
-      <FloatingLinkEditor rect={linkEditorPosition} />
+      {showLinkEditor ? (
+        <FloatingLinkEditor
+          rect={linkEditorPosition}
+          setShowLinkEditor={setShowLinkEditor}
+          linkUrl={linkUrl}
+        />
+      ) : null}
     </>
   );
 };

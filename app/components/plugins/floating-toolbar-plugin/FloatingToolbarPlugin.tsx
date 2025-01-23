@@ -9,16 +9,23 @@ export default function FloatingToolbarPlugin({
   anchorElem?: HTMLElement;
 }) {
   const [editor] = useLexicalComposerContext();
-  const { isText } = useFloatingToolbarPlugin({
-    editor,
-  });
+  const { isText, showLinkEditor, setShowLinkEditor, linkUrl } =
+    useFloatingToolbarPlugin({
+      editor,
+    });
 
-  if (!isText) {
+  if (!isText && !showLinkEditor) {
     return null;
   }
 
   return createPortal(
-    <FloatingToolbar anchorElem={anchorElem} editor={editor} />,
+    <FloatingToolbar
+      anchorElem={anchorElem}
+      editor={editor}
+      showLinkEditor={showLinkEditor}
+      setShowLinkEditor={setShowLinkEditor}
+      linkUrl={linkUrl}
+    />,
     anchorElem,
   );
 }
