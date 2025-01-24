@@ -4,8 +4,12 @@ import {
   $getSelection,
   $isRangeSelection,
   $isTextNode,
+  $setSelection,
+  COMMAND_PRIORITY_NORMAL,
   getDOMSelection,
   LexicalEditor,
+  RangeSelection,
+  SELECTION_CHANGE_COMMAND,
 } from "lexical";
 import { useCallback, useEffect, useState } from "react";
 import { getSelectedNode } from "../utils/getSelectedNode";
@@ -16,6 +20,9 @@ const useFloatingToolbarPlugin = ({ editor }: { editor: LexicalEditor }) => {
   const [showLinkEditor, setShowLinkEditor] = useState(false);
   const [isLink, setIsLink] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
+  const [lastSelection, setLastSelection] = useState<RangeSelection | null>(
+    null,
+  );
 
   const updatePopup = useCallback(() => {
     editor.getEditorState().read(() => {
@@ -24,6 +31,7 @@ const useFloatingToolbarPlugin = ({ editor }: { editor: LexicalEditor }) => {
       const rootElement = editor.getRootElement();
 
       if ($isRangeSelection(selection)) {
+        setLastSelection(selection);
         const focusNode = getSelectedNode(selection);
         const focusLinkNode = $findMatchingParent(focusNode, $isLinkNode);
         const focusAutoLinkNode = $findMatchingParent(
@@ -39,7 +47,7 @@ const useFloatingToolbarPlugin = ({ editor }: { editor: LexicalEditor }) => {
           }
         } else {
           setIsLink(false);
-          setLinkUrl("")
+          setLinkUrl("");
         }
       }
 
@@ -80,6 +88,12 @@ const useFloatingToolbarPlugin = ({ editor }: { editor: LexicalEditor }) => {
     };
   }, [updatePopup]);
 
+  const restoreSelection = useCallback(() => {
+    editor.update(() => {
+      if(!lastSelection) return;
+      $setSelection(lastSelection.clone());
+    });
+  }, [lastSelection, editor]);
   useEffect(() => {
     return mergeRegister(
       editor.registerUpdateListener(() => {
@@ -90,9 +104,20 @@ const useFloatingToolbarPlugin = ({ editor }: { editor: LexicalEditor }) => {
           setIsText(false);
         }
       }),
+      editor.registerCommand(SELECTION_CHANGE_COMMAND, () => {
+        updatePopup();
+        return false;
+      }, COMMAND_PRIORITY_NORMAL)
     );
   }, [editor, updatePopup]);
-  return { isText, isLink, linkUrl, setShowLinkEditor, showLinkEditor };
+  return {
+    isText,
+    isLink,
+    linkUrl,
+    setShowLinkEditor,
+    showLinkEditor,
+    restoreSelection,
+  };
 };
 
 export default useFloatingToolbarPlugin;

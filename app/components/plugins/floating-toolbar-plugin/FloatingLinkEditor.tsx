@@ -6,10 +6,12 @@ export default function FloatingLinkEditor({
   rect,
   setShowLinkEditor,
   linkUrl,
+  restoreSelection
 }: {
   rect: DOMRect | null;
   setShowLinkEditor: Dispatch<boolean>;
   linkUrl: string;
+  restoreSelection: any
 }) {
   if (!rect) return null;
 
@@ -26,7 +28,10 @@ export default function FloatingLinkEditor({
       onSubmit={(e) => {
         e.preventDefault();
         editor.dispatchCommand(TOGGLE_LINK_COMMAND, link);
-        setShowLinkEditor(false);
+        restoreSelection();
+        setTimeout(() => {
+          setShowLinkEditor(false);
+        }, 1000);
       }}
     >
       <input

@@ -22,12 +22,14 @@ const FloatingToolbar = ({
   setShowLinkEditor,
   showLinkEditor,
   linkUrl,
+  restoreSelection,
 }: {
   anchorElem: HTMLElement;
   editor: LexicalEditor;
   setShowLinkEditor: Dispatch<boolean>;
   showLinkEditor: boolean;
   linkUrl: string;
+  restoreSelection: any
 }) => {
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
   const [linkEditorPosition, setLinkEditorPosition] = useState<DOMRect | null>(
@@ -126,6 +128,7 @@ const FloatingToolbar = ({
           rect={linkEditorPosition}
           setShowLinkEditor={setShowLinkEditor}
           linkUrl={linkUrl}
+          restoreSelection={restoreSelection}
         />
       ) : null}
     </>

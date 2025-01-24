@@ -9,7 +9,7 @@ export default function FloatingToolbarPlugin({
   anchorElem?: HTMLElement;
 }) {
   const [editor] = useLexicalComposerContext();
-  const { isText, showLinkEditor, setShowLinkEditor, linkUrl } =
+  const { isText, showLinkEditor, setShowLinkEditor, linkUrl, restoreSelection } =
     useFloatingToolbarPlugin({
       editor,
     });
@@ -25,6 +25,7 @@ export default function FloatingToolbarPlugin({
       showLinkEditor={showLinkEditor}
       setShowLinkEditor={setShowLinkEditor}
       linkUrl={linkUrl}
+      restoreSelection={restoreSelection}
     />,
     anchorElem,
   );
