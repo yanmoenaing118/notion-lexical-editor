@@ -4,18 +4,17 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
-import { useEffect, useState } from "react";
-import FloatingToolbarPlugin from "../plugins/floating-toolbar-plugin/FloatingToolbarPlugin";
+import { useState } from "react";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { LinkNode } from "@lexical/link";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import {
-  COMMAND_PRIORITY_HIGH,
-  KEY_DOWN_COMMAND,
-  KEY_ENTER_COMMAND,
-} from "lexical";
+import FloatingToolbarPlugin from "./plugins/FloatingToolbarPlugin";
+import EditorOnChangePlugin from "./plugins/EditorOnChangePlugin";
+import { EditorState, EditorThemeClasses } from "lexical";
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
 
-const theme = {};
+const theme: EditorThemeClasses = {
+  link: "link",
+};
 
 function onError(error: Error) {
   console.error(error);
@@ -38,11 +37,19 @@ function Editor() {
     }
   };
 
+  const handleOnChange = (editorState: EditorState) => {
+    const jsonObj = editorState.toJSON();
+  };
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
+      <ToolbarPlugin />
       <RichTextPlugin
         contentEditable={
-          <div className="editor relative z-10" ref={onRef}>
+          <div
+            className="editor relative z-10 border border-red-300"
+            ref={onRef}
+          >
             <ContentEditable className="ring-0 outline-none border-none" />
           </div>
         }
@@ -53,13 +60,14 @@ function Editor() {
           </div>
         }
       />
+      <EditorOnChangePlugin onChange={handleOnChange} />
       <HistoryPlugin />
       <AutoFocusPlugin />
+
       <LinkPlugin />
       {floatingAnchorElem && (
-        <FloatingToolbarPlugin anchorElem={floatingAnchorElem} />
+        <FloatingToolbarPlugin anchorElement={floatingAnchorElem} />
       )}
-
     </LexicalComposer>
   );
 }
