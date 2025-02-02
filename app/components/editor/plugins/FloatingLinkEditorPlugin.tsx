@@ -248,33 +248,33 @@ function FloatingLinkEditor({
               monitorInputInteraction(event);
             }}
           />
-          <div>
-            <div
-              className="link-cancel"
-              role="button"
-              tabIndex={0}
-              onMouseDown={preventDefault}
-              onClick={() => {
-                setIsLinkEditMode(false);
-              }}
-            />
+          {linkUrl && (
+            <div>
+              <div
+                className="link-cancel"
+                role="button"
+                tabIndex={0}
+                onMouseDown={preventDefault}
+                onClick={() => {
+                  editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+                }}
+              >
+                Delete {linkUrl}
+              </div>
 
-            <div
-              className="link-confirm"
-              role="button"
-              tabIndex={0}
-              onMouseDown={preventDefault}
-              onClick={handleLinkSubmission}
-            />
-          </div>
+              <div
+                className="link-confirm"
+                role="button"
+                tabIndex={0}
+                onMouseDown={preventDefault}
+                onClick={handleLinkSubmission}
+              />
+            </div>
+          )}
         </>
       ) : (
         <div className="link-view">
-          <a
-            href={linkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={linkUrl} target="_blank" rel="noopener noreferrer">
             {linkUrl}
           </a>
           <div
