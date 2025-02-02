@@ -11,6 +11,7 @@ import FloatingToolbarPlugin from "./plugins/FloatingToolbarPlugin";
 import EditorOnChangePlugin from "./plugins/EditorOnChangePlugin";
 import { EditorState, EditorThemeClasses } from "lexical";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
+import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 
 const theme: EditorThemeClasses = {
   link: "link",
@@ -43,7 +44,6 @@ function Editor() {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <ToolbarPlugin />
       <RichTextPlugin
         contentEditable={
           <div
@@ -66,7 +66,18 @@ function Editor() {
 
       <LinkPlugin />
       {floatingAnchorElem && (
-        <FloatingToolbarPlugin anchorElement={floatingAnchorElem} />
+        <>
+          <FloatingToolbarPlugin anchorElement={floatingAnchorElem} />
+          <ToolbarPlugin
+            anchorElem={floatingAnchorElem}
+            setIsLinkEditMode={() => {}}
+          />
+          <FloatingLinkEditorPlugin
+            anchorElem={floatingAnchorElem}
+            setIsLinkEditMode={() => {}}
+            isLinkEditMode={true}
+          />
+        </>
       )}
     </LexicalComposer>
   );
