@@ -356,15 +356,15 @@ function useFloatingTextFormatToolbar(
       const nativeSelection = getDOMSelection(editor._window);
       const rootElement = editor.getRootElement();
 
-      if (
-        nativeSelection !== null &&
-        (!$isRangeSelection(selection) ||
-          rootElement === null ||
-          !rootElement.contains(nativeSelection.anchorNode))
-      ) {
-        setIsText(false);
-        return;
-      }
+      // if (
+      //   nativeSelection !== null &&
+      //   (!$isRangeSelection(selection) ||
+      //     rootElement === null ||
+      //     !rootElement.contains(nativeSelection.anchorNode))
+      // ) {
+      //   setIsText(false);
+      //   return;
+      // }
 
       if (!$isRangeSelection(selection)) {
         return;
@@ -428,6 +428,10 @@ function useFloatingTextFormatToolbar(
       }),
     );
   }, [editor, updatePopup]);
+
+  useEffect(() => {
+    console.log('isText', isText)
+  }, [isText])
 
   if (!isText) {
     return null;
